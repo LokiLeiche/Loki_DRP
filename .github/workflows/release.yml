@@ -2,8 +2,7 @@ name: Release VS Code Extension
 
 on:
   push:
-    branches:
-      - 'main'
+    branches: [ "main" ]
 
   workflow_dispatch:
 
@@ -45,9 +44,7 @@ jobs:
             echo "TAG_ALREADY_EXISTS=false" >> $GITHUB_OUTPUT
           fi
         env:
-          # Required for git commands to authenticate if the repo is private or requires auth
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
       - name: Install vsce
         if: ${{ steps.check_tag_existence.outputs.TAG_ALREADY_EXISTS == 'false' }}
@@ -79,10 +76,6 @@ jobs:
           tag_name: v${{ steps.get_version.outputs.EXTENSION_VERSION }}
           name: Automated Build v${{ steps.get_version.outputs.EXTENSION_VERSION }}
           body: |
-            ## Automated Build Notes for Version ${{ steps.get_version.outputs.EXTENSION_VERSION }}
-
-            * This is an automated build from commit ${{ github.sha_short }}.
-            * Branch: ${{ github.ref_name }}
-            * See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/CHANGELOG.md) for full details.
+            * This is an automated build for v${{ steps.get_version.outputs.EXTENSION_VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
