@@ -54,6 +54,11 @@
             "type": "string"
           }
         },
+        "loki-drp.secretWorkspaceText": {
+          "type": "string",
+          "default": "secret",
+          "description": "What the workspace name will be replaced with for secret workspaces"
+        },
         "loki-drp.useVSCodeLogo": {
           "type": "boolean",
           "default": false,
@@ -63,6 +68,21 @@
           "type": "boolean",
           "default": true,
           "description": "Check for new versions"
+        },
+        "loki-drp.fileText": {
+          "type": "string",
+          "default": "Editing %s",
+          "description": "The text to what you're editing, %s will be replaced with the file you have open"
+        },
+        "loki-drp.workspaceText": {
+          "type": "string",
+          "default": "Workspace: %s",
+          "description": "The text to display as what workspace you are in, %s will be replaced with the name of the folder you have open"
+        },
+        "loki-drp.idleText": {
+          "type": "string",
+          "default": "Idling",
+          "description": "The text to display when not doing anything"
         }
       }
     }

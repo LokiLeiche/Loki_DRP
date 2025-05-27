@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { Client } from 'discord-rpc';
 import { version } from 'os';
+import { format } from 'path';
 
 const CLIENT_ID = '1376721860800020523'; // discord app id
 const START_TIME: number = Date.now(); // define start time here to not reset time whenever file changes
@@ -55,43 +56,41 @@ export async function activate(_context?: vscode.ExtensionContext) {
 async function versionCheck() {
     const config = vscode.workspace.getConfiguration("loki-drp");
     if (!config.get("versionCheck")) return;
-    setTimeout(async function() {
-        const extension = vscode.extensions.getExtension("LokiScripts.loki-drp");
-        if (!extension) return;
-        const version = extension.packageJSON.version;
 
-        try {
-            const response = await fetch("https://api.github.com/repos/LokiLeiche/Loki_DRP/releases/latest", {
-                headers: {
-                    'Accept': 'application/vnd.github+json',
-                    'X-GitHub-Api-Version': '2022-11-28'
+    const extension = vscode.extensions.getExtension("LokiScripts.loki-drp");
+    if (!extension) return;
+    const version = extension.packageJSON.version;
+
+    try {
+        const response = await fetch("https://api.github.com/repos/LokiLeiche/Loki_DRP/releases/latest", {
+            headers: {
+                'Accept': 'application/vnd.github+json',
+                'X-GitHub-Api-Version': '2022-11-28'
+            }
+        });
+        if (!response.ok) return;
+        const data: any = await response.json();
+        const latest_version = data.tag_name.substring(1);
+        
+        if (version != latest_version) {
+            vscode.window.showInformationMessage(
+                `A new version for your discord rich presence extension is available! New version: ${latest_version} Your version: ${version}`,
+                'Update Now',
+                'Later',
+                "Don't remind again"
+            ).then(selection => {
+                if (selection === 'Update Now') {
+                    const uri = vscode.Uri.parse("https://github.com/LokiLeiche/Loki_DRP/releases/latest");
+                    vscode.env.openExternal(uri);
+                } else if (selection === "Don't remind again") {
+                    config.update("versionCheck", false, vscode.ConfigurationTarget.Global);
                 }
             });
-            if (!response.ok) return;
-            const data: any = await response.json();
-            const latest_version = data.tag_name.substring(1);
-            
-            if (version != latest_version) {
-                vscode.window.showInformationMessage(
-                    `A new version for your discord rich presence extension is available! New version: ${latest_version} Your version: ${version}`,
-                    'Update Now',
-                    'Later',
-                    "Don't remind again"
-                ).then(selection => {
-                    if (selection === 'Update Now') {
-                        const uri = vscode.Uri.parse("https://github.com/LokiLeiche/Loki_DRP/releases/latest");
-                        vscode.env.openExternal(uri);
-                    } else if (selection === "Don't remind again") {
-                        const config = vscode.workspace.getConfiguration("loki-drp");
-                        config.update("versionCheck", false, vscode.ConfigurationTarget.Global);
-                    }
-                });
-            }
         }
-        catch (err) {
-            console.error(err);
-        }
-    }, 1000)
+    }
+    catch (err) {
+        console.error(err);
+    }
 }
 
 
@@ -104,12 +103,12 @@ function setDiscordActivity() {
         return;
     }
 
+    const config = vscode.workspace.getConfiguration('loki-drp');
     let label_workspace: string | undefined = undefined; // stays undefined when no workspace is open to just not show, otherwise changed to label
-    let details: string = 'Idling'; // Idling as default, change to editing filename when editor is open
+    let details: string = config.get("idleText") || "Idling"; // default, change to editing filename when editor is open
     let smallImageKey: string | undefined = 'logo'; // take logo as default, allow undefined to remove in case large image is logo
 	let extension: string = "logo"; // get file extension and use that icon as large image
-
-    const config = vscode.workspace.getConfiguration('loki-drp');
+    
     const secretWorkspaces: string[] = config.get('secretWorkspaces') || []; // load hidden workspaces that should not be shown in activity
     if (config.get('useVSCodeLogo')) {
         smallImageKey = "logo_vsc";
@@ -117,7 +116,7 @@ function setDiscordActivity() {
     }
 
     let workspaceName: string | undefined = vscode.workspace.name;
-    if (workspaceName && secretWorkspaces.includes(workspaceName)) workspaceName = "Secret";
+    if (workspaceName && secretWorkspaces.includes(workspaceName)) workspaceName = config.get("secretWorkspaceText") || "secret";
 
     if (vscode.window.activeTextEditor) {
         let fileName: string | undefined = vscode.window.activeTextEditor.document.fileName.split('/').pop()?.split('\\').pop(); // only get the file name
@@ -126,13 +125,15 @@ function setDiscordActivity() {
 			if (!(dotIdx === -1 || dotIdx === fileName.length - 1)) extension = fileName.slice(dotIdx + 1);
 		}
 
-        details = `Editing ${fileName || 'an untitled file'}`;
+        details = config.get("fileText") || "Editing %s";
+        details = details.replace(/%s/g, fileName || 'an untitled file');
     }
 
     if (typeof workspaceName == "string") { // remove the [SSH: IP] after workspace name for remote connections to avoid leaking IP and keeping it clean
         let remoteIdx = workspaceName.indexOf("[SSH: ")
         if (remoteIdx > 0) workspaceName = workspaceName.slice(0, remoteIdx - 1)
-        label_workspace = `Workspace: ${workspaceName || 'No Folder Open'}`;
+        label_workspace = config.get("workspaceText") || "Workspace: %s";
+        label_workspace = label_workspace.replace(/%s/g, workspaceName || 'No Folder Open');
     } 
 
 	if (extension == "logo" || extension == "logo_vsc") { // undefine the small image which is logo in case big image is logo to avoid double logo
