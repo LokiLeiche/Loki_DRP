@@ -1,0 +1,82 @@
+name: Release VS Code Extension
+
+on:
+  push:
+    branches:
+      - 'main'
+
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Get extension version from package.json
+        id: get_version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "EXTENSION_VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if release tag already exists
+        id: check_tag_existence
+        run: |
+          NEW_TAG_NAME="v${{ steps.get_version.outputs.EXTENSION_VERSION }}"
+          if git rev-parse --verify "refs/tags/$NEW_TAG_NAME" >/dev/null 2>&1; then
+            echo "Tag '$NEW_TAG_NAME' already exists. Skipping new release."
+            echo "TAG_ALREADY_EXISTS=true" >> $GITHUB_OUTPUT
+          else
+            echo "Tag '$NEW_TAG_NAME' does not exist. Proceeding with release."
+            echo "TAG_ALREADY_EXISTS=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          # Required for git commands to authenticate if the repo is private or requires auth
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+      - name: Install vsce
+        if: ${{ steps.check_tag_existence.outputs.TAG_ALREADY_EXISTS == 'false' }}
+        run: npm install -g @vscode/vsce
+
+      - name: Package extension
+        if: ${{ steps.check_tag_existence.outputs.TAG_ALREADY_EXISTS == 'false' }}
+        run: vsce package
+        id: package_extension
+
+      - name: Get .vsix file name
+        if: ${{ steps.check_tag_existence.outputs.TAG_ALREADY_EXISTS == 'false' }}
+        id: get_vsix_name
+        run: |
+          VSIX_FILE=$(ls *.vsix | head -n 1)
+          echo "VSIX_FILE=$VSIX_FILE" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        if: ${{ steps.check_tag_existence.outputs.TAG_ALREADY_EXISTS == 'false' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.get_vsix_name.outputs.VSIX_FILE }}
+          draft: false
+          prerelease: false
+          tag_name: v${{ steps.get_version.outputs.EXTENSION_VERSION }}
+          name: Automated Build v${{ steps.get_version.outputs.EXTENSION_VERSION }}
+          body: |
+            ## Automated Build Notes for Version ${{ steps.get_version.outputs.EXTENSION_VERSION }}
+
+            * This is an automated build from commit ${{ github.sha_short }}.
+            * Branch: ${{ github.ref_name }}
+            * See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/CHANGELOG.md) for full details.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
