@@ -54,10 +54,15 @@
             "type": "string"
           }
         },
-        "loki-drp.useVSClogo": {
+        "loki-drp.useVSCodeLogo": {
           "type": "boolean",
           "default": false,
           "description": "Use VSCode logo instead of the authors logo"
+        },
+        "loki-drp.versionCheck": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check for new versions"
         }
       }
     }

@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { Client } from 'discord-rpc';
+import { version } from 'os';
 
 const CLIENT_ID = '1376721860800020523'; // discord app id
 const START_TIME: number = Date.now(); // define start time here to not reset time whenever file changes
@@ -8,6 +9,7 @@ var rpc: Client | null = null;
 
 
 export async function activate(_context?: vscode.ExtensionContext) {
+    versionCheck();
     rpc = new Client({ transport: 'ipc' }); // initialize client
 
     rpc.on('ready', () => {
@@ -44,10 +46,52 @@ export async function activate(_context?: vscode.ExtensionContext) {
     vscode.workspace.onDidOpenTextDocument(setDiscordActivity);
     vscode.workspace.onDidCloseTextDocument(setDiscordActivity);
     vscode.workspace.onDidChangeConfiguration(event => {
-        if (event.affectsConfiguration('loki-drp.secretWorkspaces') || event.affectsConfiguration('loki-drp.useVSClogo')) {
+        if (event.affectsConfiguration('loki-drp.secretWorkspaces') || event.affectsConfiguration('loki-drp.useVSCodeLogo')) {
             setDiscordActivity();
         }
     });
+}
+
+async function versionCheck() {
+    const config = vscode.workspace.getConfiguration("loki-drp");
+    if (!config.get("versionCheck")) return;
+    setTimeout(async function() {
+        const extension = vscode.extensions.getExtension("LokiScripts.loki-drp");
+        if (!extension) return;
+        const version = extension.packageJSON.version;
+
+        try {
+            const response = await fetch("https://api.github.com/repos/LokiLeiche/Loki_DRP/releases/latest", {
+                headers: {
+                    'Accept': 'application/vnd.github+json',
+                    'X-GitHub-Api-Version': '2022-11-28'
+                }
+            });
+            if (!response.ok) return;
+            const data: any = await response.json();
+            const latest_version = data.tag_name.substring(1);
+            
+            if (version != latest_version) {
+                vscode.window.showInformationMessage(
+                    `A new version for your discord rich presence extension is available! New version: ${latest_version} Your version: ${version}`,
+                    'Update Now',
+                    'Later',
+                    "Don't remind again"
+                ).then(selection => {
+                    if (selection === 'Update Now') {
+                        const uri = vscode.Uri.parse("https://github.com/LokiLeiche/Loki_DRP/releases/latest");
+                        vscode.env.openExternal(uri);
+                    } else if (selection === "Don't remind again") {
+                        const config = vscode.workspace.getConfiguration("loki-drp");
+                        config.update("versionCheck", false, vscode.ConfigurationTarget.Global);
+                    }
+                });
+            }
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }, 1000)
 }
 
 
@@ -67,7 +111,7 @@ function setDiscordActivity() {
 
     const config = vscode.workspace.getConfiguration('loki-drp');
     const secretWorkspaces: string[] = config.get('secretWorkspaces') || []; // load hidden workspaces that should not be shown in activity
-    if (config.get('useVSClogo')) {
+    if (config.get('useVSCodeLogo')) {
         smallImageKey = "logo_vsc";
         extension = "logo_vsc"
     }
