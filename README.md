@@ -1,5 +1,7 @@
 # Discord Rich Presence
 
+[![Release Build](https://github.com/LokiLeiche/Loki_DRP/actions/workflows/release.yml/badge.svg)](https://github.com/LokiLeiche/Loki_DRP/actions/workflows/release.yml)
+
 This is a simple VSCode extension that updates your discord rich presence (activity) based on what you are doing in VSCode
 
 ![preview image](preview.png)
@@ -9,6 +11,9 @@ This is a simple VSCode extension that updates your discord rich presence (activ
 * Display an icon depending on the file type you are editing
 * Show the workspace you opened
 * Configure certain workspaces to be hidden
+
+## Install instructions
+Download the .vsix file from the [latest release](https://github.com/LokiLeiche/Loki_DRP/releases/latest). Now open VSCode, go to extensions, click the three dots at the top and press "Install from VSIX...", you'll get an explorer window where you have to select the downloaded .vsix file and that's it.
 
 ## Notes
 This extension is highly personalized towards my needs and was not designed with the general public in mind.
