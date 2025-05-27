@@ -10,24 +10,24 @@
     "email": "support@lokiscripts.com"
   },
   "keywords": [
-		"discord",
-		"vscode",
-		"rich",
-		"presence",
-		"rich presence",
-		"rpc",
+    "discord",
+    "vscode",
+    "rich",
+    "presence",
+    "rich presence",
+    "rpc",
     "vsc",
     "activity",
     "status"
-	],
+  ],
   "repository": {
-		"type": "git",
-		"url": "https://github.com/loki_leiche/loki_drp.git"
-	},
+    "type": "git",
+    "url": "https://github.com/LokiLeiche/Loki_DRP.git"
+  },
   "bugs": {
-		"url": "https://github.com/loki_leiche/loki_drp/issues"
-	},
-  "homepage": "https://github.com/loki_leiche/loki_drp#readme",
+    "url": "https://github.com/LokiLeiche/Loki_DRP/issues"
+  },
+  "homepage": "https://github.com/LokiLeiche/Loki_DRP#readme",
   "engines": {
     "vscode": "^1.100.0"
   },
@@ -39,7 +39,9 @@
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
-  "extensionKind": ["ui"],
+  "extensionKind": [
+    "ui"
+  ],
   "contributes": {
     "configuration": {
       "title": "Loki Discord Rich Presence",
