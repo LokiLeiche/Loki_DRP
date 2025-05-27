@@ -28,3 +28,4 @@ If you'd like to build this extension yourself from source, follow these instruc
 5. Install VSCE npm package: `npm install -g @vscode/vsce`
 6. Build the VSIX file: `vsce package`
 7. Install the extension from the newly generated .vsix file like mentioned in the install instructions
+When building you'll get a warning that electron was not found as dependency, since we use IPC to connect to discord you can savely ignore that.

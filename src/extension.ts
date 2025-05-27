@@ -44,7 +44,7 @@ export async function activate(_context?: vscode.ExtensionContext) {
     vscode.workspace.onDidOpenTextDocument(setDiscordActivity);
     vscode.workspace.onDidCloseTextDocument(setDiscordActivity);
     vscode.workspace.onDidChangeConfiguration(event => {
-        if (event.affectsConfiguration('loki_drp.secretWorkspaces')) {
+        if (event.affectsConfiguration('loki-drp.secretWorkspaces') || event.affectsConfiguration('loki-drp.useVSClogo')) {
             setDiscordActivity();
         }
     });
@@ -65,8 +65,12 @@ function setDiscordActivity() {
     let smallImageKey: string | undefined = 'logo'; // take logo as default, allow undefined to remove in case large image is logo
 	let extension: string = "logo"; // get file extension and use that icon as large image
 
-    const config = vscode.workspace.getConfiguration('loki_drp');
+    const config = vscode.workspace.getConfiguration('loki-drp');
     const secretWorkspaces: string[] = config.get('secretWorkspaces') || []; // load hidden workspaces that should not be shown in activity
+    if (config.get('useVSClogo')) {
+        smallImageKey = "logo_vsc";
+        extension = "logo_vsc"
+    }
 
     let workspaceName: string | undefined = vscode.workspace.name;
     if (workspaceName && secretWorkspaces.includes(workspaceName)) workspaceName = "Secret";
@@ -87,7 +91,7 @@ function setDiscordActivity() {
         label_workspace = `Workspace: ${workspaceName || 'No Folder Open'}`;
     } 
 
-	if (extension == "logo") { // undefine the small image which is logo in case big image is logo to avoid double logo
+	if (extension == "logo" || extension == "logo_vsc") { // undefine the small image which is logo in case big image is logo to avoid double logo
 		smallImageKey = undefined;
 	} else extension = extension.toLowerCase(); // lowercase to have both .TS and .ts show as typescript logo
 
@@ -118,7 +122,7 @@ function setDiscordActivity() {
 
 				startTimestamp: START_TIME,
 
-				largeImageKey: "logo",
+				largeImageKey: smallImageKey,
 				largeImageText: details,
 
 				instance: false,

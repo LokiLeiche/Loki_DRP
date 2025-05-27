@@ -46,13 +46,18 @@
     "configuration": {
       "title": "Loki Discord Rich Presence",
       "properties": {
-        "loki_drp.secretWorkspaces": {
+        "loki-drp.secretWorkspaces": {
           "type": "array",
           "default": [],
           "description": "List of workspace names (folder names) to hide in Discord activity",
           "items": {
             "type": "string"
           }
+        },
+        "loki-drp.useVSClogo": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use VSCode logo instead of the authors logo"
         }
       }
     }
