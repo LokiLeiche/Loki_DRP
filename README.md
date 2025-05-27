@@ -1,6 +1,7 @@
 # Discord Rich Presence
 
 [![Release Build](https://github.com/LokiLeiche/Loki_DRP/actions/workflows/release.yml/badge.svg)](https://github.com/LokiLeiche/Loki_DRP/actions/workflows/release.yml)
+[![Build](https://github.com/LokiLeiche/Loki_DRP/actions/workflows/build.yml/badge.svg)](https://github.com/LokiLeiche/Loki_DRP/actions/workflows/build.yml)
 
 This is a simple VSCode extension that updates your discord rich presence (activity) based on what you are doing in VSCode
 

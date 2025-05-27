@@ -1,4 +1,4 @@
-name: Build
+name: Latest commit build
 
 on:
   push:
