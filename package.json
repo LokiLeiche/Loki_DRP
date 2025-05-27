@@ -1,10 +1,10 @@
 {
   "name": "loki-drp",
-  "displayName": "Loki Discord Rich Presence",
+  "displayName": "Loki Discord Presence",
   "description": "A simple discord rich presence extension for vscode",
   "version": "1.0.0",
   "private": true,
-  "publisher": "Loki",
+  "publisher": "LokiScripts",
   "author": {
     "name": "Loki",
     "email": "support@lokiscripts.com"
@@ -64,13 +64,8 @@
   },
   "devDependencies": {
     "@types/discord-rpc": "^4.0.9",
-    "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
     "@types/vscode": "^1.100.0",
-    "@typescript-eslint/eslint-plugin": "^8.31.1",
-    "@typescript-eslint/parser": "^8.31.1",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.5.2",
     "eslint": "^9.25.1",
     "ts-loader": "^9.5.2",
     "typescript": "^5.8.3",
@@ -80,7 +75,6 @@
   "dependencies": {
     "bufferutil": "^4.0.9",
     "discord-rpc": "^4.0.1",
-    "electron": "^36.3.1",
     "utf-8-validate": "^5.0.10"
   }
 }
