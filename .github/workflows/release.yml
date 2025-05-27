@@ -2,7 +2,7 @@ name: Release VS Code Extension
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
   workflow_dispatch:
 
