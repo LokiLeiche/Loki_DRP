@@ -51,6 +51,10 @@ jobs:
         if: ${{ steps.check_tag_existence.outputs.TAG_ALREADY_EXISTS == 'false' }}
         run: npm install -g @vscode/vsce
 
+      - name: Build extension
+        if: ${{ steps.check_tag_existence.outputs.TAG_ALREADY_EXISTS == 'false' }}
+        run: npm run package
+
       - name: Package extension
         if: ${{ steps.check_tag_existence.outputs.TAG_ALREADY_EXISTS == 'false' }}
         run: vsce package
