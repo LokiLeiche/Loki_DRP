@@ -1,0 +1,84 @@
+{
+  "name": "loki-drp",
+  "displayName": "Loki Discord Rich Presence",
+  "description": "A simple discord rich presence extension for vscode",
+  "version": "1.0.0",
+  "private": true,
+  "publisher": "Loki",
+  "author": {
+    "name": "Loki",
+    "email": "support@lokiscripts.com"
+  },
+  "keywords": [
+		"discord",
+		"vscode",
+		"rich",
+		"presence",
+		"rich presence",
+		"rpc",
+    "vsc",
+    "activity",
+    "status"
+	],
+  "repository": {
+		"type": "git",
+		"url": "https://github.com/loki_leiche/loki_drp.git"
+	},
+  "bugs": {
+		"url": "https://github.com/loki_leiche/loki_drp/issues"
+	},
+  "homepage": "https://github.com/loki_leiche/loki_drp#readme",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "icon": "icon.png",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "extensionKind": ["ui"],
+  "contributes": {
+    "configuration": {
+      "title": "Loki Discord Rich Presence",
+      "properties": {
+        "loki_drp.secretWorkspaces": {
+          "type": "array",
+          "default": [],
+          "description": "List of workspace names (folder names) to hide in Discord activity",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map"
+  },
+  "devDependencies": {
+    "@types/discord-rpc": "^4.0.9",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.100.0",
+    "@typescript-eslint/eslint-plugin": "^8.31.1",
+    "@typescript-eslint/parser": "^8.31.1",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.25.1",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.8.3",
+    "webpack": "^5.99.7",
+    "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "bufferutil": "^4.0.9",
+    "discord-rpc": "^4.0.1",
+    "electron": "^36.3.1",
+    "utf-8-validate": "^5.0.10"
+  }
+}
