@@ -18,3 +18,13 @@ Download the .vsix file from the [latest release](https://github.com/LokiLeiche/
 ## Notes
 This extension is highly personalized towards my needs and was not designed with the general public in mind.
 If you still wish to use this extension as is, feel free to do so. Otherwise feel free to change the code to your needs and compile your own version.
+
+## Build instructions
+If you'd like to build this extension yourself from source, follow these instructions:
+1. Clone the source code: `git clone https://github.com/LokiLeiche/Loki_DRP.git`
+2. Go to the cloned directory: `cd Loki_DRP`
+3. Install NPM packages: `npm install`
+4. Compile everything: `npm run package`
+5. Install VSCE npm package: `npm install -g @vscode/vsce`
+6. Build the VSIX file: `vsce package`
+7. Install the extension from the newly generated .vsix file like mentioned in the install instructions
