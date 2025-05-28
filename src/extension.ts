@@ -1,7 +1,5 @@
 import * as vscode from 'vscode';
 import { Client } from 'discord-rpc';
-import { version } from 'os';
-import { format } from 'path';
 
 const CLIENT_ID = '1376721860800020523'; // discord app id
 const START_TIME: number = Date.now(); // define start time here to not reset time whenever file changes
@@ -47,9 +45,14 @@ export async function activate(_context?: vscode.ExtensionContext) {
     vscode.workspace.onDidOpenTextDocument(setDiscordActivity);
     vscode.workspace.onDidCloseTextDocument(setDiscordActivity);
     vscode.workspace.onDidChangeConfiguration(event => {
-        if (event.affectsConfiguration('loki-drp.secretWorkspaces') || event.affectsConfiguration('loki-drp.useVSCodeLogo')) {
-            setDiscordActivity();
-        }
+        if (event.affectsConfiguration('loki-drp.secretWorkspaces') ||
+            event.affectsConfiguration('loki-drp.useVSCodeLogo') ||
+            event.affectsConfiguration('loki-drp.secretWorkspaceText') ||
+            event.affectsConfiguration('loki-drp.useVSCodeLogo') ||
+            event.affectsConfiguration('loki-drp.fileText') ||
+            event.affectsConfiguration('loki-drp.workspaceText') ||
+            event.affectsConfiguration('loki-drp.idleText')
+        ) setDiscordActivity();
     });
 }
 
