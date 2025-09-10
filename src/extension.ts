@@ -3,11 +3,21 @@ import { Client } from 'discord-rpc';
 
 const CLIENT_ID = '1376721860800020523'; // discord app id
 const START_TIME: number = Date.now(); // define start time here to not reset time whenever file changes
+let time = START_TIME;
 
 var rpc: Client | null = null;
 
 
-export async function activate(_context?: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
+    const config = vscode.workspace.getConfiguration("loki-drp");
+    if (config.get('persistentTimer')) {
+        const lastTimestamp: number | undefined = context.globalState.get('lastTimestamp');
+        if (lastTimestamp && lastTimestamp < START_TIME && START_TIME - lastTimestamp < 1000 * 60 * 5) {
+            time = lastTimestamp;
+        }
+        context.globalState.update('lastTimestamp', time);
+    }
+
     versionCheck();
     rpc = new Client({ transport: 'ipc' }); // initialize client
 
@@ -33,7 +43,7 @@ export async function activate(_context?: vscode.ExtensionContext) {
             rpc = null;
 
             setTimeout(function() {
-                activate();
+                activate(context);
             }, 30000)
             return;
         }
@@ -113,7 +123,6 @@ function setDiscordActivity() {
 	let extension: string = "logo"; // get file extension and use that icon as large image
     let buttons; // buttons that link to the github repo if available
 
-
     if (config.get('linkGithubRepo')) {
         try {
             const ext = vscode.extensions.getExtension('vscode.git');
@@ -172,7 +181,7 @@ function setDiscordActivity() {
 				details: details,
 				state: label_workspace,
 
-				startTimestamp: START_TIME,
+				startTimestamp: time,
 
 				largeImageKey: extension,
 				largeImageText: details,
@@ -190,7 +199,7 @@ function setDiscordActivity() {
 				details: details,
 				state: label_workspace,
 
-				startTimestamp: START_TIME,
+				startTimestamp: time,
 
 				largeImageKey: smallImageKey,
 				largeImageText: details,

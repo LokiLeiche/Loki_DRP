@@ -2,7 +2,7 @@
   "name": "loki-drp",
   "displayName": "Loki Discord Presence",
   "description": "A simple discord rich presence extension for vscode",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": true,
   "publisher": "LokiScripts",
   "author": {
@@ -68,6 +68,11 @@
           "type": "boolean",
           "default": true,
           "description": "Add a button under your activity that links to the github repo that you currently work in"
+        },
+        "loki-drp.persistentTimer": {
+          "type": "boolean",
+          "default": true,
+          "description": "This way the timer in the discord acitvity is persistent for up to 5 minutes, so it doesn't reset when switching workspaces or restarting VSCode"
         },
         "loki-drp.versionCheck": {
           "type": "boolean",
