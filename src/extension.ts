@@ -48,7 +48,7 @@ export async function activate(_context?: vscode.ExtensionContext) {
         if (event.affectsConfiguration('loki-drp.secretWorkspaces') ||
             event.affectsConfiguration('loki-drp.useVSCodeLogo') ||
             event.affectsConfiguration('loki-drp.secretWorkspaceText') ||
-            event.affectsConfiguration('loki-drp.useVSCodeLogo') ||
+            event.affectsConfiguration('loki-drp.linkGithubRepo') ||
             event.affectsConfiguration('loki-drp.fileText') ||
             event.affectsConfiguration('loki-drp.workspaceText') ||
             event.affectsConfiguration('loki-drp.idleText')
@@ -111,6 +111,26 @@ function setDiscordActivity() {
     let details: string = config.get("idleText") || "Idling"; // default, change to editing filename when editor is open
     let smallImageKey: string | undefined = 'logo'; // take logo as default, allow undefined to remove in case large image is logo
 	let extension: string = "logo"; // get file extension and use that icon as large image
+    let buttons; // buttons that link to the github repo if available
+
+
+    if (config.get('linkGithubRepo')) {
+        try {
+            const ext = vscode.extensions.getExtension('vscode.git');
+
+            if (ext) {
+                const url: string = ext.exports.model.openRepositories[0].repository.remotes[0].fetchUrl
+                if (url.startsWith("https://github.com")) { // prevent non-github urls
+                    buttons = [{
+                        label: "Github Repository",
+                        url: ext.exports.model.openRepositories[0].repository.remotes[0].fetchUrl
+                    }]
+                }
+            }
+        } catch {}
+    }
+    
+    
     
     const secretWorkspaces: string[] = config.get('secretWorkspaces') || []; // load hidden workspaces that should not be shown in activity
     if (config.get('useVSCodeLogo')) {
@@ -159,6 +179,8 @@ function setDiscordActivity() {
 
 				smallImageKey: smallImageKey,
 
+                buttons: buttons,
+
 				instance: false,
         	});
 		}
@@ -172,6 +194,8 @@ function setDiscordActivity() {
 
 				largeImageKey: smallImageKey,
 				largeImageText: details,
+
+                buttons: buttons,
 
 				instance: false,
         	});

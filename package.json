@@ -2,7 +2,7 @@
   "name": "loki-drp",
   "displayName": "Loki Discord Presence",
   "description": "A simple discord rich presence extension for vscode",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "publisher": "LokiScripts",
   "author": {
@@ -64,6 +64,11 @@
           "default": false,
           "description": "Use VSCode logo instead of the authors logo"
         },
+        "loki-drp.linkGithubRepo": {
+          "type": "boolean",
+          "default": true,
+          "description": "Add a button under your activity that links to the github repo that you currently work in"
+        },
         "loki-drp.versionCheck": {
           "type": "boolean",
           "default": true,
@@ -105,6 +110,7 @@
   "dependencies": {
     "bufferutil": "^4.0.9",
     "discord-rpc": "^4.0.1",
+    "electron": "^38.0.0",
     "utf-8-validate": "^5.0.10"
   }
 }
